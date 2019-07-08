@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.1.1
+# Version: 1.1.2
 # https://gist.github.com/Noah2610/68f0351ff2d4970f0403edb03cc5bde6
 
 # Returns `0` or `1` depending on if the given string is available as a command.
@@ -120,7 +120,7 @@ check "dirname"
 # If the name of the directory is 'bin', then set `$ROOT`
 # to the parent directory of 'bin/'.
 [ -z "$ROOT" ] &&
-  ROOT="$( dirname "$0" )" &&
+  ROOT="$( cd "$( dirname "$0" )" || exit 1; pwd )" &&
   [ "$( basename "$ROOT" )" == "bin" ] &&
   ROOT="$( dirname "$ROOT" )"
 
