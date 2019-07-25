@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.2.3
+# Version: 1.2.4
 # https://github.com/Noah2610/util.sh
 
 # Returns `0` or `1` depending on if the given string is available as a command.
@@ -84,8 +84,9 @@ function try_run {
   local cmd="$1"
   [ -z "$cmd" ] && err "No command given."
   local out
+  msg "Running: \033[${COLOR_CODE}m${cmd}\033[m"
   if ! out="$( $cmd 2>&1 )"; then
-    err "Command failed:\n\033[33m${cmd}\033[m\nReturned:\n${out}"
+    err "Command failed:\n  \033[${COLOR_CODE}m${cmd}\033[m\nReturned:\n${out}"
   fi
 }
 
