@@ -4,6 +4,6 @@
 
 # shellcheck source=./util.sh  # Optional; fixes shellcheck's `source` warning
 _dir="$( dirname "$0" )"
-[ -f "${_dir}/util.sh" ] || "${_dir}/download-util.sh" || exit 1
+[ -f "${_dir}/util.sh" ] || bash "${_dir}/download-util.sh" || exit 1
 source "${_dir}/util.sh"
 unset _dir
