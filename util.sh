@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.2.5
+# Version: 1.3.5
 # https://github.com/Noah2610/util.sh
 
 # Returns `0` or `1` depending on if the given string is available as a command.
@@ -47,19 +47,21 @@ function strip_ansi_codes {
 function colored {
   local color="$1"
   local txt="$2"
-  ([ -z "$color" ] || [ -z "$txt" ]) &&
+  { [ -z "$color" ] || [ -z "$txt" ]; } &&
     err "Function \`$0\` needs two arguments: the color and the text."
   echo "\033[${color}m${txt}\033[m"
 }
 
 # This function simply prints out the passed argument with a color.
 function msg {
+  print_log "$1"
   echo -e "$( colored "${COLOR_MSG}" "${1}" )"
 }
 
 # Same as `msg`, but also makes the text bold.
 function msg_strong {
-  echo -e "$( colored "${COLOR_MSG_STRONG}" "${1}" )"
+  print_log "$( semantic_date )\n${1}"
+  echo -e "$( colored "${COLOR_MSG_STRONG}" "${1}" )" | tee -a "$LOGFILE"
 }
 
 # Print out a date string in a specifc format.
@@ -67,14 +69,16 @@ function msg_strong {
 # boxed-string: https://gist.github.com/Noah2610/2c4a92f6732419becade2f76bc943039
 function semantic_date {
   check "date"
-  local dfmt='+%F %T'
-  local dstr="$( date "$dfmt" )"
+  local dfmt
+  local dstr
+  dfmt='+%F %T'
+  dstr="$( date "$dfmt" )"
   if is_available "boxed-string"; then
     BOXED_PADDING_HORZ=1 \
     BOXED_PADDING_VERT=0 \
     boxed-string -- "$dstr"
   else
-    echo "$dstr"
+    echo "$dstr" | tee -a "$LOGFILE"
   fi
 }
 
@@ -85,7 +89,7 @@ function try_run {
   [ -z "$cmd" ] && err "No command given."
   local out
   msg "${spacing}Running: \033[${COLOR_CODE}m${cmd}\033[m"
-  if ! out="$( $cmd 2>&1 )"; then
+  if ! out="$( $cmd 2>&1 | tee -a "$LOGFILE" )"; then
     err "Command failed:\n  \033[${COLOR_CODE}m${cmd}\033[m\nReturned:\n${out}"
   fi
 }
@@ -118,6 +122,7 @@ function run_terminal {
 
 check "basename"
 check "dirname"
+check "tee"
 
 # Set `$ROOT` variable to the directory of this script,
 # unless it was already set.
@@ -125,7 +130,7 @@ check "dirname"
 # to the parent directory of 'bin/'.
 [ -z "$ROOT" ] &&
   ROOT="$( cd "$( dirname "$0" )" || exit 1; pwd )" &&
-  [ "$( basename "$ROOT" )" == "bin" ] &&
+  [ "$( basename "$ROOT" )" = "bin" ] &&
   ROOT="$( dirname "$ROOT" )"
 
 # Set the `$LOGFILE` variable unless it was already set.
