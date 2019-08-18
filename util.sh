@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.5
+# Version: 1.3.6
 # https://github.com/Noah2610/util.sh
 
 # Returns `0` or `1` depending on if the given string is available as a command.
@@ -61,7 +61,7 @@ function msg {
 # Same as `msg`, but also makes the text bold.
 function msg_strong {
   print_log "$( semantic_date )\n${1}"
-  echo -e "$( colored "${COLOR_MSG_STRONG}" "${1}" )" | tee -a "$LOGFILE"
+  echo -e "$( colored "${COLOR_MSG_STRONG}" "${1}" )"
 }
 
 # Print out a date string in a specifc format.
