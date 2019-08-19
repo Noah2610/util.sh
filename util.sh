@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.6
+# Version: 1.3.7
 # https://github.com/Noah2610/util.sh
 
 # Returns `0` or `1` depending on if the given string is available as a command.
@@ -106,7 +106,7 @@ function should_run_in_terminal {
 # Run the given command in a new terminal.
 function run_terminal {
   local cmd="$1"
-  local cmd_bash="bash -c '$cmd || (echo -e \"----------\n[CONTINUE]\"; read')"
+  local cmd_bash="bash -c '$cmd || (echo -e \"----------\n[CONTINUE]\"; read)'"
   [ -n "$cmd" ] || err "No command given to function \`$0\`."
   check "$TERMINAL"
   case "$TERMINAL" in
