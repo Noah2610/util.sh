@@ -1,6 +1,8 @@
 # util.sh
-# Version: 1.3.7
+# Version: 1.3.8
 # https://github.com/Noah2610/util.sh
+
+set -o pipefail
 
 # Returns `0` or `1` depending on if the given string is available as a command.
 function is_available {
