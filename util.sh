@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.8
+# Version: 1.3.9
 # https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -16,6 +16,12 @@ function check {
   local cmd="$1"
   [ -z "$cmd" ] && err "No command to check given to function \`$0\`"
   is_available "$cmd" &> /dev/null || err "\`$( colored "$COLOR_CODE" "$cmd" )\` is not available."
+}
+
+# Exit with error message if the given file path does not exist.
+function check_file {
+  local FILE="$1"
+  [ -f "$FILE" ] || err "File does not exist: '$( colored "$COLOR_CODE" "$FILE" )'"
 }
 
 # Print the given string to stdout and to the `$LOGFILE` (if one exists), with color.
