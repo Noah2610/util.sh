@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.10
+# Version: 1.3.11
 # https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -16,10 +16,7 @@ function is_running {
   check "pgrep"
   local to_check="$1"
   [ -z "$to_check" ] && err "No command to check if running given to function \`$0\`"
-
-  local ps_out
-  ps_out="$( pgrep "$to_check" )"
-  [ -n "$ps_out" ]
+  pgrep -c "$to_check" &> /dev/null
 }
 
 # Exit with error message (`err`) if the given string is not available as a command.
