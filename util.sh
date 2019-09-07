@@ -35,7 +35,7 @@ function check_file {
 # Exit with error message if the given directory path does not exist.
 function check_dir {
   local DIR="$1"
-  [ -d "$DIR" ] || err "Directory does not exist: $( colored "$COLOR_CODE" "$FILE" )"
+  [ -d "$DIR" ] || err "Directory does not exist: $( colored "$COLOR_CODE" "$DIR" )"
 }
 
 # Print the given string to stdout and to the `$LOGFILE` (if one exists), with color.
