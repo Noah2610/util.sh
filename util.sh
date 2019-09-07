@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.12
+# Version: 1.3.13
 # https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -29,7 +29,13 @@ function check {
 # Exit with error message if the given file path does not exist.
 function check_file {
   local FILE="$1"
-  [ -f "$FILE" ] || err "File does not exist: '$( colored "$COLOR_CODE" "$FILE" )'"
+  [ -f "$FILE" ] || err "File does not exist: $( colored "$COLOR_CODE" "$FILE" )"
+}
+
+# Exit with error message if the given directory path does not exist.
+function check_dir {
+  local DIR="$1"
+  [ -d "$DIR" ] || err "Directory does not exist: $( colored "$COLOR_CODE" "$FILE" )"
 }
 
 # Print the given string to stdout and to the `$LOGFILE` (if one exists), with color.
