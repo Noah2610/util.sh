@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.13
+# Version: 1.3.14
 # https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -7,7 +7,7 @@ set -o pipefail
 # Returns `0` or `1` depending on if the given string is available as a command.
 function is_available {
   local cmd="$1"
-  [ -z "$cmd" ] && err "No command to check for availability given to function \`$0\`"
+  [ -z "$cmd" ] && err "No command to check for availability given to function \`is_available\`"
   command -v "$cmd" &> /dev/null
 }
 
@@ -15,14 +15,14 @@ function is_available {
 function is_running {
   check "pgrep"
   local to_check="$1"
-  [ -z "$to_check" ] && err "No command to check if running given to function \`$0\`"
+  [ -z "$to_check" ] && err "No command to check if running given to function \`is_running\`"
   pgrep -xc "$to_check" &> /dev/null
 }
 
 # Exit with error message (`err`) if the given string is not available as a command.
 function check {
   local cmd="$1"
-  [ -z "$cmd" ] && err "No command to check given to function \`$0\`"
+  [ -z "$cmd" ] && err "No command to check given to function \`check\`"
   is_available "$cmd" &> /dev/null || err "\`$( colored "$COLOR_CODE" "$cmd" )\` is not available."
 }
 
@@ -48,7 +48,7 @@ function err {
 # Print the given string to the `$LOGFILE` (if one exists), and strip color from the text.
 function print_log {
   local txt="$1"
-  [ -z "$txt" ] && err "No message text given to function \`$0\`"
+  [ -z "$txt" ] && err "No message text given to function \`print_log\`"
   [ -n "$LOGFILE" ] && echo -e "$( strip_ansi_codes "$txt" )\n" >> "$LOGFILE"
 }
 
@@ -70,7 +70,7 @@ function colored {
   local color="$1"
   local txt="$2"
   { [ -z "$color" ] || [ -z "$txt" ]; } &&
-    err "Function \`$0\` needs two arguments: the color and the text."
+    err "Function \`colored\` needs two arguments: the color and the text."
   echo "\033[${color}m${txt}\033[m"
 }
 
@@ -129,7 +129,7 @@ function should_run_in_terminal {
 function run_terminal {
   local cmd="$1"
   local cmd_bash="bash -c '$cmd || (echo -e \"----------\n[CONTINUE]\"; read)'"
-  [ -n "$cmd" ] || err "No command given to function \`$0\`."
+  [ -n "$cmd" ] || err "No command given to function \`run_terminal\`."
   check "$TERMINAL"
   case "$TERMINAL" in
     "termite")
@@ -137,7 +137,7 @@ function run_terminal {
       disown
       ;;
     *)
-      err "Function \`$0\` is not configured for terminal '$TERMINAL'"
+      err "Function \`run_terminal\` is not configured for terminal '$TERMINAL'"
       ;;
   esac
 }
