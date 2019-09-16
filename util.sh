@@ -1,5 +1,5 @@
 # util.sh
-# Version: 1.3.14
+# Version: 1.3.15
 # https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -106,12 +106,16 @@ function semantic_date {
 
 # Tries to run the given command and hides its output.
 # If the command fails, then it prints the output with `err`.
+# If the variable `$also_to_stderr` is set, then additionally to writing
+# the commands output to the `$LOGFILE`, it also prints it to stderr.
 function try_run {
   local cmd="$1"
   [ -z "$cmd" ] && err "No command given."
   local out
+  local out_files=("$LOGFILE")
+  [ -n "$also_to_stderr" ] && out_files+=("/dev/stderr")
   msg "${spacing}Running: \033[${COLOR_CODE}m${cmd}\033[m"
-  if ! out="$( $cmd 2>&1 | tee -a "$LOGFILE" )"; then
+  if ! out="$( $cmd 2>&1 | tee -a "${out_files[@]}" )"; then
     err "Command failed:\n  \033[${COLOR_CODE}m${cmd}\033[m\nReturned:\n${out}"
   fi
 }
