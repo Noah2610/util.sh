@@ -274,8 +274,7 @@ function is_positive {
 # Returns `0` or `1` depending on if the final command should be run in a new terminal.
 # For very specific use-case(s).
 function should_run_in_terminal {
-    [ -n "$RUN_NEW_TERMINAL" ] \
-        && [ "$RUN_NEW_TERMINAL" != "0" ] \
+    is_positive "$RUN_TERMINAL" \
         && [ -n "$TERMINAL" ] \
         && is_available "$TERMINAL"
 }
