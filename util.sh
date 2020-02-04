@@ -97,7 +97,7 @@ function _strip_ansi_codes {
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 function clrfg {
     local color_str="$1"
-    local color_code=
+    local color_code
     [ -z "$color_str" ] && err "No color argument given to function \`clrfg\`"
     color_code="$( _color_code_generic "$color_str" )"
     echo -en "\e[${color_code}m"
@@ -113,7 +113,7 @@ function clrfg {
 #   "default", "reset"
 function clrbg {
     local color_str="$1"
-    local color_code=
+    local color_code
     [ -z "$color_str" ] && err "No color argument given to function \`clrbg\`"
     color_code="$(( 10 + $( _color_code_generic "$color_str" ) ))"
     echo -en "\e[${color_code}m"
@@ -224,22 +224,45 @@ function semantic_date {
     fi
 }
 
+# Tries to run the given command.
+# All arguments are parsed as the command, so the first argument is the
+# command, and all following arguments are passed as arguments to the command.
+# Runs `err` if the command fails.
+# Writes the command's output to the `$LOGFILE`.
+function try_run {
+    local cmd=( "$@" )
+    [ ${#cmd} -lt 1 ] && err "No command given to function \`try_run\`"
+    local out
+    local cmd_display
+    cmd_display="$( clr "${CLR_CODE[@]}")${cmd[*]}$(clrrs )"
+
+    # shellcheck disable=SC2154
+    msg "${spacing}Running: ${cmd_display}"
+    if ! ${cmd[*]} | tee -a "$LOGFILE"; then
+        err "Command failed: ${cmd_display}"
+    fi
+}
+
+# Similar to function `try_run_hidden`, but hides the command's output.
 # Tries to run the given command and hides its output.
 # All arguments are parsed as the command, so the first argument is the
 # command, and all following arguments are passed as arguments to the command.
 # If the command fails, then it prints the output with `err`.
 # Writes the command's output to the `$LOGFILE`.
 function try_run_hidden {
-    local cmd
-
-    local cmd="$1"
-    [ -z "$cmd" ] && err "No command given."
+    local cmd=( "$@" )
+    [ ${#cmd} -lt 1 ] && err "No command given to function \`try_run_hidden\`"
     local out
-    local out_files=("$LOGFILE")
-    [ -n "$also_to_stderr" ] && out_files+=("/dev/stderr")
-    msg "${spacing}Running: \033[${COLOR_CODE}m${cmd}\033[m"
-    if ! out="$( $cmd 2>&1 | tee -a "${out_files[@]}" )"; then
-        err "Command failed:\n  \033[${COLOR_CODE}m${cmd}\033[m\nReturned:\n${out}"
+    local cmd_display
+    cmd_display="$( clr "${CLR_CODE[@]}")${cmd[*]}$(clrrs )"
+
+    # shellcheck disable=SC2154
+    msg "${spacing}Running: ${cmd_display}"
+    if ! out="$( ${cmd[*]} 2>&1 | tee -a "$LOGFILE" )"; then
+        err "\
+Command failed: ${cmd_display}
+Returned:
+${out}"
     fi
 }
 
