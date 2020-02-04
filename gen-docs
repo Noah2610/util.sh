@@ -29,9 +29,12 @@ function gen_docs {
 
     for doc_group in "${doc_groups[@]}"; do
         mapfile -t doc_lines <<< "$doc_group"
+        # TODO: The substitution here starts at :1 which is because
+        #       the docs seem to always start with a new line;
+        #       this is a hacky "solution".
         doc_text="$(
             join_by $'  \n' \
-                "${doc_lines[@]::${#doc_lines[@]}-1}" \
+                "${doc_lines[@]:1:${#doc_lines[@]}-2}" \
                 | sed 's/^#\s\+//g'
         )"
         doc_code="${doc_lines[-1]}"
@@ -47,7 +50,7 @@ function gen_docs {
             )"
             markdown_sections+=( \
                 $'### `function '"${function_name}"$'`
-                            '"${doc_text}" \
+'"${doc_text}" \
             )
         fi
     done
