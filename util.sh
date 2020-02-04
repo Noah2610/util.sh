@@ -100,7 +100,7 @@ function clrfg {
     local color_code=
     [ -z "$color_str" ] && err "No color argument given to function \`clrfg\`"
     color_code="$( _color_code_generic "$color_str" )"
-    echo -e "\e[${color_code}m"
+    echo -en "\e[${color_code}m"
 }
 
 # Echos the BACKGROUND color code matching the given color argument.
@@ -116,7 +116,7 @@ function clrbg {
     local color_code=
     [ -z "$color_str" ] && err "No color argument given to function \`clrbg\`"
     color_code="$(( 10 + $( _color_code_generic "$color_str" ) ))"
-    echo -e "\e[${color_code}m"
+    echo -en "\e[${color_code}m"
 }
 
 # Echos the attribute color code matching the given argument.
@@ -128,14 +128,14 @@ function clrattr {
     local attr_str="$1"
     [ -z "$attr_str" ] && err "No attribute argument given to function \`clrattr\`"
     case "$attr_str" in
-        "bold")      echo -e "\e[1m" ;;
-        "dim")       echo -e "\e[2m" ;;
-        "underline") echo -e "\e[4m" ;;
-        "blink")     echo -e "\e[5m" ;;
-        "invert")    echo -e "\e[7m" ;;
-        "hidden")    echo -e "\e[8m" ;;
-        "default")   echo -e "\e[8m" ;;
-        "reset")     echo -e "\e[20m" ;;
+        "bold")      echo -en "\e[1m" ;;
+        "dim")       echo -en "\e[2m" ;;
+        "underline") echo -en "\e[4m" ;;
+        "blink")     echo -en "\e[5m" ;;
+        "invert")    echo -en "\e[7m" ;;
+        "hidden")    echo -en "\e[8m" ;;
+        "default")   echo -en "\e[8m" ;;
+        "reset")     echo -en "\e[20m" ;;
         *) err "Invalid attribute argument: \"${attr_str}\"" ;;
     esac
 }
@@ -159,7 +159,7 @@ function clr {
 
 # Resets all color settings to default.
 function clrrs {
-    echo -e "\e[0m"
+    echo -en "\e[0m"
 }
 
 # Internal helper function.
@@ -170,24 +170,24 @@ function _color_code_generic {
     local color_str="$1"
     [ -z "$color_str" ] && err "No color argument given to function \`_color_code_generic\`"
     case "$color_str" in
-        "black")        echo "30" ;;
-        "white")        echo "97" ;;
-        "red")          echo "31" ;;
-        "green")        echo "32" ;;
-        "blue")         echo "34" ;;
-        "yellow")       echo "33" ;;
-        "magenta")      echo "35" ;;
-        "cyan")         echo "36" ;;
-        "lightgray")    echo "37" ;;
-        "darkgray")     echo "90" ;;
-        "lightred")     echo "91" ;;
-        "lightgreen")   echo "92" ;;
-        "lightblue")    echo "94" ;;
-        "lightyellow")  echo "93" ;;
-        "lightmagenta") echo "95" ;;
-        "lightcyan")    echo "96" ;;
-        "default")      echo "39" ;;
-        "reset")        echo "39" ;;
+        "black")        echo -n "30" ;;
+        "white")        echo -n "97" ;;
+        "red")          echo -n "31" ;;
+        "green")        echo -n "32" ;;
+        "blue")         echo -n "34" ;;
+        "yellow")       echo -n "33" ;;
+        "magenta")      echo -n "35" ;;
+        "cyan")         echo -n "36" ;;
+        "lightgray")    echo -n "37" ;;
+        "darkgray")     echo -n "90" ;;
+        "lightred")     echo -n "91" ;;
+        "lightgreen")   echo -n "92" ;;
+        "lightblue")    echo -n "94" ;;
+        "lightyellow")  echo -n "93" ;;
+        "lightmagenta") echo -n "95" ;;
+        "lightcyan")    echo -n "96" ;;
+        "default")      echo -n "39" ;;
+        "reset")        echo -n "39" ;;
         *) err "Invalid color argument: \"${color_str}\"" ;;
     esac
 }
@@ -302,8 +302,8 @@ COLOR_MSG_STRONG="1;33"
 COLOR_CODE="0;36;40"
 
 # TODO
-CLR_ERR=( "white" "red" "bold" )
-CLR_WARN=( "white" "yellow" "bold" )
+CLR_ERR=( "black" "red" "bold" )
+CLR_WARN=( "black" "yellow" "bold" )
 CLR_MSG=( "yellow" "default" "default" )
 # CLR_MSG_STRONG=( "yellow" "default" "bold" )
 CLR_CODE=( "blue" "black" "default" )
