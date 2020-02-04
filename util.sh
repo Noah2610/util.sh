@@ -50,6 +50,7 @@ function msg {
 # DEPRECATED
 # Same as `msg`, but also makes the text bold.
 function msg_strong {
+    warn "Function \`msg_strong\` is deprecated"
     print_log "$( semantic_date )\n${1}"
     echo -e "$( colored "${COLOR_MSG_STRONG}" "${1}" )"
 }
