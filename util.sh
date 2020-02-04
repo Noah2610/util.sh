@@ -134,7 +134,7 @@ function clrattr {
         "blink")     echo -en "\e[5m" ;;
         "invert")    echo -en "\e[7m" ;;
         "hidden")    echo -en "\e[8m" ;;
-        "default")   echo -en "\e[8m" ;;
+        "default")   echo -en "\e[20m" ;;
         "reset")     echo -en "\e[20m" ;;
         *) err "Invalid attribute argument: \"${attr_str}\"" ;;
     esac
