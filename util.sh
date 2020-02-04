@@ -251,7 +251,7 @@ function try_run {
 # Writes the command's output to the `$LOGFILE`.
 function try_run_hidden {
     local cmd=( "$@" )
-    [ ${#cmd} -lt 1 ] && err "No command given to function \`try_run_hidden\`"
+    [ ${#cmd} -gt 0 ] || err "No command given to function \`try_run_hidden\`"
     local out
     local cmd_display
     cmd_display="$( clr "${CLR_CODE[@]}")${cmd[*]}$(clrrs )"
@@ -266,6 +266,11 @@ ${out}"
     fi
 }
 
+# Returns `0` if the given argument represents a "positive" value (not empty and non-0).
+function is_positive {
+    [ -n "$1" ] && [ "$1" != "0" ]
+}
+
 # Returns `0` or `1` depending on if the final command should be run in a new terminal.
 # For very specific use-case(s).
 function should_run_in_terminal {
@@ -276,10 +281,14 @@ function should_run_in_terminal {
 }
 
 # Run the given command in a new terminal.
+# The first argument is the command, any following arguments
+# are passed to the command as its arguments.
+# The new shell's working directory is set to the `$ROOT` variable.
 function run_terminal {
-    local cmd="$1"
-    local cmd_bash="bash -c '$cmd || (echo -e \"----------\n[CONTINUE]\"; read)'"
-    [ -n "$cmd" ] || err "No command given to function \`run_terminal\`."
+    local cmd=( "$@" )
+    [ ${#cmd} -gt 0 ] || err "No command given to function \`run_terminal\`."
+    local cmd_bash="bash -c '${cmd[*]} || (echo -e \"\n[CONTINUE]\"; read)'"
+
     check "$TERMINAL"
     case "$TERMINAL" in
         "termite")
@@ -287,46 +296,50 @@ function run_terminal {
             disown
             ;;
         *)
-            err "Function \`run_terminal\` is not configured for terminal '$TERMINAL'"
+            err "Function \`run_terminal\` is not configured for terminal '${TERMINAL}'"
             ;;
     esac
 }
 
-check "basename"
-check "dirname"
-check "tee"
+function _init {
+    check "basename"
+    check "dirname"
+    check "tee"
 
-# Set `$ROOT` variable to the directory of this script,
-# unless it was already set.
-# If the name of the directory is 'bin', then set `$ROOT`
-# to the parent directory of 'bin/'.
-[ -z "$ROOT" ] \
-    && ROOT="$( cd "$( dirname "$0" )" || exit 1; pwd )" \
-    && [ "$( basename "$ROOT" )" = "bin" ] \
-    && ROOT="$( dirname "$ROOT" )"
+    local script_name="$1"
 
-# Set the `$LOGFILE` variable unless it was already set.
-[ -z "$LOGFILE" ] \
-    && LOGFILE="$ROOT/.$( basename "$0" ).log"
+    # Set `$ROOT` variable to the directory of this script,
+    # unless it was already set.
+    # If the name of the directory is 'bin', then set `$ROOT`
+    # to the parent directory of 'bin/'.
+    [ -z "$ROOT" ] \
+        && ROOT="$( cd "$( dirname "$script_name" )" || exit 1; pwd )" \
+        && [ "$( basename "$ROOT" )" = "bin" ] \
+        && ROOT="$( dirname "$ROOT" )"
 
-# Create the directory path to `$LOGFILE` if it doesn't exist.
-logfile_dir="$( dirname "$LOGFILE" )"
-! [ -d "$logfile_dir" ] && mkdir -p "$logfile_dir"
-unset logfile_dir
+    # Set the `$LOGFILE` variable unless it was already set.
+    [ -z "$LOGFILE" ] \
+        && LOGFILE="$ROOT/.$( basename "$script_name" ).log"
 
-# Set the `$TERMINAL` variable unless it was already set.
-[ -z "$TERMINAL" ] && TERMINAL="termite"
+    # Create the directory path to `$LOGFILE` if it doesn't exist.
+    logfile_dir="$( dirname "$LOGFILE" )"
+    ! [ -d "$logfile_dir" ] && mkdir -p "$logfile_dir"
+    unset logfile_dir
 
-# DEPRECATED
-# Set some ansi color code variables.
-COLOR_ERR="1;31"
-COLOR_MSG="0;33"
-COLOR_MSG_STRONG="1;33"
-COLOR_CODE="0;36;40"
+    # Set the `$TERMINAL` variable unless it was already set.
+    [ -z "$TERMINAL" ] && TERMINAL="termite"
 
-# TODO
-CLR_ERR=( "black" "red" "bold" )
-CLR_WARN=( "black" "yellow" "bold" )
-CLR_MSG=( "yellow" "default" "default" )
-# CLR_MSG_STRONG=( "yellow" "default" "bold" )
-CLR_CODE=( "blue" "black" "default" )
+    # DEPRECATED
+    # Set some ansi color code variables.
+    COLOR_ERR="1;31"
+    COLOR_MSG="0;33"
+    COLOR_MSG_STRONG="1;33"
+    COLOR_CODE="0;36;40"
+
+    CLR_ERR=( "black" "red" "bold" )
+    CLR_WARN=( "black" "yellow" "bold" )
+    CLR_MSG=( "yellow" "default" "default" )
+    CLR_CODE=( "blue" "black" "default" )
+}
+
+_init "$0"
