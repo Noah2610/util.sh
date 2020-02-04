@@ -1,0 +1,43 @@
+#!/bin/bash
+# Generates a documentation markdown file for util.sh
+# It documents all functions by grabbing the function names
+# and their documentation comments above the their header.
+
+# shellcheck disable=2155
+
+# shellcheck source=./util.sh
+source "./util.sh"
+
+UTIL_SH="${ROOT}/util.sh"
+
+check_file "$UTIL_SH"
+check "pcregrep"
+check "sed"
+
+function gen_docs {
+    local functions_and_docs
+    # argument used as nameref
+    get_function_headers_with_docs functions_and_docs
+    echo "${functions_and_docs[0]}"
+}
+
+function get_function_headers_with_docs {
+    # https://stackoverflow.com/a/49971213
+    local -n doc_groups="$1"
+    local lftmp="<NEWLINE>"
+
+    mapfile -t doc_groups < <(
+        pcregrep -MA1 \
+            '(^\s*#[^\n]+$)+' \
+            "$UTIL_SH" \
+            | sed ':a;N;$!ba;s/\n/'"${lftmp}"'/g' \
+            | sed 's/'"${lftmp}"'--'"${lftmp}"'/\n/g'
+            # https://stackoverflow.com/a/1252191
+    )
+    local i
+    for (( i = 0; i < ${#doc_groups[@]}; i++ )); do
+        doc_groups[i]="${doc_groups[i]//"$lftmp"/$'\n'}"
+    done
+}
+
+gen_docs "$@"
