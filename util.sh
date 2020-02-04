@@ -300,6 +300,15 @@ function run_terminal {
     esac
 }
 
+# https://stackoverflow.com/a/17841619
+function join_by {
+    local d=$1
+    shift
+    echo -n "$1"
+    shift
+    printf "%s" "${@/#/$d}"
+}
+
 function _init {
     check "basename"
     check "dirname"

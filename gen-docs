@@ -19,31 +19,41 @@ function gen_docs {
     # argument used as nameref
     get_function_headers_with_docs doc_groups
 
+    local markdown_sections=()
     local doc_group
     local doc_lines
-    local code_line
-    local code_doc
+    local doc_code
+    local doc_text
     local function_name
-    local variable_name
+    local variable_name # TODO
 
     for doc_group in "${doc_groups[@]}"; do
         mapfile -t doc_lines <<< "$doc_group"
-        code_line="${doc_lines[-1]}"
-        if [ -n "$code_line" ] \
-            && [[ $code_line =~ ^\s*function ]]
+        doc_text="$(
+            join_by $'  \n' \
+                "${doc_lines[@]::${#doc_lines[@]}-1}" \
+                | sed 's/^#\s\+//g'
+        )"
+        doc_code="${doc_lines[-1]}"
+        if [ -n "$doc_code" ] \
+            && [[ $doc_code =~ ^\s*function ]]
         then
             # Is a function header
+            # TODO: This only parses the function name when using this syntax:
+            #           function my_func
             function_name="$(
-                echo "$code_line" \
-                    | sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p'
+                echo "$doc_code" \
+                        | sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p'
             )"
-            echo "FN: ${function_name}"
-        else
-            echo "ZERO"
+            markdown_sections+=( \
+                $'### `function '"${function_name}"$'`
+                            '"${doc_text}" \
+            )
         fi
     done
 
-    # echo "${doc_groups[0]}"
+    local markdown="$( join_by $'\n\n---\n\n' "${markdown_sections[@]}" )"
+    echo "${markdown}"
 }
 
 function get_function_headers_with_docs {
