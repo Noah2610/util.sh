@@ -20,10 +20,9 @@ The file is quite self-explanatory, once you look inside.
 It provides some boilerplate code, which downloads `util.sh` (using `download-util.sh`),  
 unless the `util.sh` file already exists, and `source`s the file.
 
----
+## Documentation
+Documentation for available utility functions is available at [`DOCS.md`](./DOCS.md).  
 
-__TODO:__ Documentation
-
-[util.sh]:          https://raw.githubusercontent.com/Noah2610/util.sh/master/util.sh
-[download-util.sh]: https://raw.githubusercontent.com/Noah2610/util.sh/master/download-util.sh
-[bootstrap.sh]:     https://raw.githubusercontent.com/Noah2610/util.sh/master/bootstrap.sh
+[util.sh]:          ./util.sh
+[download-util.sh]: ./download-util.sh
+[bootstrap.sh]:     ./bootstrap.sh

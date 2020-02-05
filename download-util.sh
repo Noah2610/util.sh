@@ -1,7 +1,7 @@
 #!/bin/bash
 # Small script that attempts to download my util.sh helper script.
 # Version: 2.0.0
-GITREF="master"; [ -n "$1" ] && GITREF="$1"
+GITREF="v2"; [ -n "$1" ] && GITREF="$1"
 URL="https://raw.githubusercontent.com/Noah2610/util.sh/${GITREF}/util.sh"
 function err { (echo -e "ERROR: $1\nExiting" 1>&2); exit 1; }
 function check { command -v "$1" &> /dev/null || err "'$1' is not available"; }
