@@ -1,5 +1,5 @@
 ## # util.sh
-## Version: `2.0.0`
+## Version: `2.1.0`
 ## https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -190,7 +190,7 @@ function _color_code_generic {
     esac
 }
 
-## __TODO:__ Refactor?
+# __TODO:__ Refactor?
 ## Print out a date string in a specifc format.
 ## If the command `boxed-string` is available, then it calls that with the date string.
 ## boxed-string: https://gist.github.com/Noah2610/2c4a92f6732419becade2f76bc943039
@@ -283,6 +283,24 @@ function run_terminal {
             err "Function \`run_terminal\` is not configured for terminal '${TERMINAL}'"
             ;;
     esac
+}
+
+## Returns `0` or `1` depending on if the user answers
+## positively (`y`) or negatively (`n`).
+## The first argument is the message/question printed to `stdout`.
+function prompt_question {
+    local msg="$1 [y|n] "
+    local input=
+    while [ -z "$input" ]; do
+        echo -en "$msg"
+        read -rn1 input
+        echo
+        case "${input:0:1}" in
+            "y"|"Y") return 0 ;;
+            "n"|"N") return 1 ;;
+            *) input= ;;
+        esac
+    done
 }
 
 ## https://stackoverflow.com/a/17841619
