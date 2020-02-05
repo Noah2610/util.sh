@@ -5,6 +5,8 @@
 
 # shellcheck disable=2155
 
+set -e
+
 # shellcheck source=./util.sh
 source "./util.sh"
 
@@ -26,21 +28,28 @@ function gen_docs {
     local doc_code
     local doc_text
     local function_name
-    local variable_name # TODO
+    # local variable_name # TODO
+
+    local doc_text_sep=$'  \n'
 
     for doc_group in "${doc_groups[@]}"; do
-        mapfile -t doc_lines < <(
-            echo "$doc_group"
+        local doc_text_lines_minus_offset=1
+
+        mapfile -t doc_lines < <( \
+            echo "$doc_group" \
+                | sed '/^\s*$/d'
         )
-        # TODO: The substitution here starts at :1 which is because
-        #       the docs seem to always start with a new line;
-        #       this is a hacky "solution".
+        doc_code="${doc_lines[-1]}"
+        if [[ $doc_code =~ ^"${DOC_COMMENT}" ]]; then
+            doc_code=
+            doc_text_lines_minus_offset=0
+        fi
         doc_text="$(
-            join_by $'  \n' \
-                "${doc_lines[@]:0:${#doc_lines[@]}-1}" \
+            join_by "$doc_text_sep" \
+                "${doc_lines[@]:0:${#doc_lines[@]} - ${doc_text_lines_minus_offset}}" \
                 | sed 's/^\s*'"${DOC_COMMENT}"'\s\+//g'
         )"
-        doc_code="${doc_lines[-1]}"
+
         if [ -n "$doc_code" ]; then
             if [[ $doc_code =~ ^\s*function ]]; then
                 # Is a function header
@@ -55,7 +64,7 @@ $'### `function '"${function_name}"$'`
 '"${doc_text}" \
                 )
             else
-                warn "TODO: Documentation for non-function code\n\"${doc_text}\""
+                warn "TODO: Documentation for non-function code\n\"${doc_text}\"\n\"${doc_code}\""
             fi
 
         else
