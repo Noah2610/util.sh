@@ -1,5 +1,5 @@
 # util.sh  
-Version: `2.0.0`  
+Version: `2.1.0`  
 https://github.com/Noah2610/util.sh
 
 <details>
@@ -28,6 +28,7 @@ Table of Contents
   - [`function is_positive`](#function-is_positive)
   - [`function should_run_in_terminal`](#function-should_run_in_terminal)
   - [`function run_terminal`](#function-run_terminal)
+  - [`function prompt_question`](#function-prompt_question)
   - [`function join_by`](#function-join_by)
 
 </details>
@@ -108,7 +109,6 @@ This function takes three arguments:
 Resets all color settings to default.
 
 ### `function semantic_date`
-__TODO:__ Refactor?  
 Print out a date string in a specifc format.  
 If the command `boxed-string` is available, then it calls that with the date string.  
 boxed-string: https://gist.github.com/Noah2610/2c4a92f6732419becade2f76bc943039
@@ -140,6 +140,11 @@ Run the given command in a new terminal.
 The first argument is the command, any following arguments  
 are passed to the command as its arguments.  
 The new shell's working directory is set to the `$ROOT` variable.
+
+### `function prompt_question`
+Returns `0` or `1` depending on if the user answers  
+positively (`y`) or negatively (`n`).  
+The first argument is the message/question printed to `stdout`.
 
 ### `function join_by`
 https://stackoverflow.com/a/17841619
