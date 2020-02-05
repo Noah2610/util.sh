@@ -1,5 +1,5 @@
 ## # util.sh
-## Version: `2.1.0`
+## Version: `2.1.1`
 ## https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -30,14 +30,14 @@ function check {
 ## Exit with error message if the given file path does not exist.
 function check_file {
     local FILE="$1"
-    [ -z "$FILE" ] && err "No file given"
+    [ -z "$FILE" ] && err "No file given to function \`check_file\`"
     [ -f "$FILE" ] || err "File does not exist: $(clr "${CLR_CODE[@]}")${FILE}$(clrrs)"
 }
 
 ## Exit with error message if the given directory path does not exist.
 function check_dir {
     local DIR="$1"
-    [ -z "$FILE" ] && err "No directory given"
+    [ -z "$DIR" ] && err "No directory given to function \`check_dir\`"
     [ -d "$DIR" ] || err "Directory does not exist: $(clr "${CLR_CODE[@]}")${DIR}$(clrrs)"
 }
 
