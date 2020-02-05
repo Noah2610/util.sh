@@ -55,7 +55,7 @@ function gen_docs {
         fi
     done
 
-    local markdown="$( join_by $'\n\n---\n\n' "${markdown_sections[@]}" )"
+    local markdown="$( join_by $'\n\n' "${markdown_sections[@]}" )"
     echo "${markdown}"
 }
 
