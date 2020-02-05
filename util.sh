@@ -326,7 +326,7 @@ function _init {
 
     # Set some commonly used colors.
     # Arrays have the format of `( "fgcolor" "bgcolor" "attribute" )`.
-    CLR_ERR=( "black" "red" "bold" )
+    CLR_ERR=( "white" "red" "bold" )
     CLR_WARN=( "black" "yellow" "bold" )
     CLR_MSG=( "yellow" "default" "default" )
     CLR_CODE=( "blue" "black" "default" )
