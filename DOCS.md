@@ -1,5 +1,5 @@
 # util.sh  
-Version: `2.1.0`  
+Version: `2.2.2`  
 https://github.com/Noah2610/util.sh
 
 <details>
@@ -26,9 +26,12 @@ Table of Contents
   - [`function try_run`](#function-try_run)
   - [`function try_run_hidden`](#function-try_run_hidden)
   - [`function is_positive`](#function-is_positive)
+  - [`function is_negative`](#function-is_negative)
   - [`function should_run_in_terminal`](#function-should_run_in_terminal)
   - [`function run_terminal`](#function-run_terminal)
   - [`function prompt_question`](#function-prompt_question)
+  - [`function is_absolute_path`](#function-is_absolute_path)
+  - [`function is_relative_path`](#function-is_relative_path)
   - [`function join_by`](#function-join_by)
 
 </details>
@@ -131,6 +134,9 @@ Writes the command's output to the `$LOGFILE`.
 ### `function is_positive`
 Returns `0` if the given argument represents a "positive" value (not empty and non-0).
 
+### `function is_negative`
+Returns `0` if the given argument represents a "negative" value (empty or 0).
+
 ### `function should_run_in_terminal`
 Returns `0` or `1` depending on if the final command should be run in a new terminal.  
 For very specific use-case(s).
@@ -145,6 +151,12 @@ The new shell's working directory is set to the `$ROOT` variable.
 Returns `0` or `1` depending on if the user answers  
 positively (`y`) or negatively (`n`).  
 The first argument is the message/question printed to `stdout`.
+
+### `function is_absolute_path`
+Returns `0` if the given argument is an absolute path (starts with "/").
+
+### `function is_relative_path`
+Returns `0` if the given argument is a relative path (does _not_ start with "/").
 
 ### `function join_by`
 https://stackoverflow.com/a/17841619
