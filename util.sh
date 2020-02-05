@@ -320,19 +320,21 @@ function _init {
     check "tee"
 
     local script_name="$1"
+    # shellcheck disable=SC2155
+    local script_path="$( realpath "$script_name" )"
 
     # Set `$ROOT` variable to the directory of this script,
     # unless it was already set.
     # If the name of the directory is 'bin', then set `$ROOT`
     # to the parent directory of 'bin/'.
     [ -z "$ROOT" ] \
-        && ROOT="$( cd "$( dirname "$script_name" )" || exit 1; pwd )" \
+        && ROOT="$( cd "$( dirname "$script_path" )" || exit 1; pwd )" \
         && [ "$( basename "$ROOT" )" = "bin" ] \
         && ROOT="$( dirname "$ROOT" )"
 
     # Set the `$LOGFILE` variable unless it was already set.
     [ -z "$LOGFILE" ] \
-        && LOGFILE="$ROOT/.$( basename "$script_name" ).log"
+        && LOGFILE="${ROOT}/.$( basename "$script_path" ).log"
 
     # Create the directory path to `$LOGFILE` if it doesn't exist.
     logfile_dir="$( dirname "$LOGFILE" )"
