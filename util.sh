@@ -1,5 +1,5 @@
 ## # util.sh
-## Version: `2.1.2`
+## Version: `2.2.2`
 ## https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -256,6 +256,11 @@ function is_positive {
     [ -n "$1" ] && [ "$1" != "0" ]
 }
 
+## Returns `0` if the given argument represents a "negative" value (empty or 0).
+function is_negative {
+    [ -z "$1" ] || [ "$1" = "0" ]
+}
+
 ## Returns `0` or `1` depending on if the final command should be run in a new terminal.
 ## For very specific use-case(s).
 function should_run_in_terminal {
@@ -301,6 +306,16 @@ function prompt_question {
             *) input= ;;
         esac
     done
+}
+
+## Returns `0` if the given argument is an absolute path (starts with "/").
+function is_absolute_path {
+    [[ "$1" = /* ]]
+}
+
+## Returns `0` if the given argument is a relative path (does _not_ start with "/").
+function is_relative_path {
+    [[ "$1" != /* ]]
 }
 
 ## https://stackoverflow.com/a/17841619
