@@ -9,6 +9,7 @@
 source "./util.sh"
 
 UTIL_SH="${ROOT}/util.sh"
+DOC_COMMENT="##"
 
 check_file "$UTIL_SH"
 check "pcregrep"
@@ -28,30 +29,40 @@ function gen_docs {
     local variable_name # TODO
 
     for doc_group in "${doc_groups[@]}"; do
-        mapfile -t doc_lines <<< "$doc_group"
+        mapfile -t doc_lines < <(
+            echo "$doc_group"
+        )
         # TODO: The substitution here starts at :1 which is because
         #       the docs seem to always start with a new line;
         #       this is a hacky "solution".
         doc_text="$(
             join_by $'  \n' \
-                "${doc_lines[@]:1:${#doc_lines[@]}-2}" \
-                | sed 's/^#\s\+//g'
+                "${doc_lines[@]:0:${#doc_lines[@]}-1}" \
+                | sed 's/^\s*'"${DOC_COMMENT}"'\s\+//g'
         )"
         doc_code="${doc_lines[-1]}"
-        if [ -n "$doc_code" ] \
-            && [[ $doc_code =~ ^\s*function ]]
-        then
-            # Is a function header
-            # TODO: This only parses the function name when using this syntax:
-            #           function my_func
-            function_name="$(
-                echo "$doc_code" \
-                        | sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p'
-            )"
-            markdown_sections+=( \
-                $'### `function '"${function_name}"$'`
+        if [ -n "$doc_code" ]; then
+            if [[ $doc_code =~ ^\s*function ]]; then
+                # Is a function header
+                # TODO: This only parses the function name when using this syntax:
+                #           function my_func
+                function_name="$(
+                    echo "$doc_code" \
+                            | sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p'
+                )"
+                markdown_sections+=( \
+$'### `function '"${function_name}"$'`
 '"${doc_text}" \
-            )
+                )
+            else
+                warn "TODO: Documentation for non-function code\n\"${doc_text}\""
+            fi
+
+        else
+            # Just add the comment to the markdown, without associated code.
+            # A meta documentation comment of sorts.
+            # Also append a vertical line separator.
+            markdown_sections+=( "${doc_text}"$'\n\n---' )
         fi
     done
 
@@ -66,7 +77,7 @@ function get_function_headers_with_docs {
 
     mapfile -t return_doc_groups < <(
         pcregrep -MA1 \
-            '(^\s*#[^\n]+$)+' \
+            '(^\s*'"${DOC_COMMENT}"'[^\n]+$)+' \
             "$UTIL_SH" \
             | sed ':a;N;$!ba;s/\n/'"${lftmp}"'/g' \
             | sed 's/'"${lftmp}"'--'"${lftmp}"'/\n/g'
