@@ -1,5 +1,5 @@
-## util.sh
-## Version: 2.0.0
+## # util.sh
+## Version: `2.0.0`
 ## https://github.com/Noah2610/util.sh
 
 set -o pipefail
