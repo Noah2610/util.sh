@@ -2,7 +2,39 @@
 Version: `2.0.0`  
 https://github.com/Noah2610/util.sh
 
+<details>
+<summary>
+Table of Contents
+</summary>
+
+- [Functions](#functions)
+  - [`function is_available`](#function-is_available)
+  - [`function is_running`](#function-is_running)
+  - [`function check`](#function-check)
+  - [`function check_file`](#function-check_file)
+  - [`function check_dir`](#function-check_dir)
+  - [`function msg`](#function-msg)
+  - [`function err`](#function-err)
+  - [`function warn`](#function-warn)
+  - [`function print_log`](#function-print_log)
+  - [`function clrfg`](#function-clrfg)
+  - [`function clrbg`](#function-clrbg)
+  - [`function clrattr`](#function-clrattr)
+  - [`function clr`](#function-clr)
+  - [`function clrrs`](#function-clrrs)
+  - [`function semantic_date`](#function-semantic_date)
+  - [`function try_run`](#function-try_run)
+  - [`function try_run_hidden`](#function-try_run_hidden)
+  - [`function is_positive`](#function-is_positive)
+  - [`function should_run_in_terminal`](#function-should_run_in_terminal)
+  - [`function run_terminal`](#function-run_terminal)
+  - [`function join_by`](#function-join_by)
+
+</details>
+
 ---
+
+## Functions
 
 ### `function is_available`
 Returns `0` or `1` depending on if the given string is available as a command.
