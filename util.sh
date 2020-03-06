@@ -331,6 +331,19 @@ function join_by {
     printf "%s" "${@/#/$d}"
 }
 
+## `realpath` wrapper function.
+## Executes `realpath` if it is available, otherwise
+## it just uses a combination of `cd` and `pwd`.
+function realpath {
+    if is_available "realpath"; then
+        command realpath "$@"
+    else
+        pushd "$( dirname "$1" )" &> /dev/null || exit 1
+        echo "$( pwd )/$( basename "$1" )"
+        popd &> /dev/null || exit 1
+    fi
+}
+
 # Initialize the helper script.
 # Is run at the end of this script.
 function _init {
