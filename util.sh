@@ -360,16 +360,16 @@ function _init {
     # shellcheck disable=SC2155
     local script_path="$( realpath "$script_name" )"
 
-    # Set `$ROOT` variable to the directory of this script,
-    # unless it was already set.
-    # If the name of the directory is 'bin', then set `$ROOT`
-    # to the parent directory of 'bin/'.
+    ## Set `$ROOT` variable to the directory of this script,
+    ## unless it was already set.
+    ## If the name of the directory is 'bin', then set `$ROOT`
+    ## to the parent directory of 'bin/'.
     [ -z "$ROOT" ] \
         && ROOT="$( cd "$( dirname "$script_path" )" || exit 1; pwd )" \
         && [ "$( basename "$ROOT" )" = "bin" ] \
         && ROOT="$( dirname "$ROOT" )"
 
-    # Set the `$LOGFILE` variable unless it was already set.
+    ## Set the `$LOGFILE` variable unless it was already set.
     [ -z "$LOGFILE" ] \
         && LOGFILE="${ROOT}/.$( basename "$script_path" ).log"
 
@@ -378,10 +378,10 @@ function _init {
     ! [ -d "$logfile_dir" ] && mkdir -p "$logfile_dir"
     unset logfile_dir
 
-    # Set the `$TERMINAL` variable unless it was already set.
+    ## Set the `$TERMINAL` variable unless it was already set.
     [ -z "$TERMINAL" ] && TERMINAL="termite"
 
-    # Set `$NO_COLOR` to disable color output.
+    ## Set `$NO_COLOR` to disable color output.
     [ -z "$NO_COLOR" ] && NO_COLOR=
 
     # Set some commonly used colors.

@@ -27,8 +27,6 @@ function gen_docs {
     local doc_lines
     local doc_code
     local doc_text
-    local function_name
-    # local variable_name # TODO
 
     local doc_text_sep=$'  \n'
 
@@ -40,7 +38,7 @@ function gen_docs {
                 | sed '/^\s*$/d'
         )
         doc_code="${doc_lines[-1]}"
-        if [[ $doc_code =~ ^"${DOC_COMMENT}" ]]; then
+        if [[ $doc_code =~ ^[[:space:]]*"${DOC_COMMENT}" ]]; then
             doc_code=
             doc_text_lines_minus_offset=0
         fi
@@ -50,28 +48,32 @@ function gen_docs {
                 | sed 's/^\s*'"${DOC_COMMENT}"'\s\+//g'
         )"
 
-        if [ -n "$doc_code" ]; then
-            if [[ $doc_code =~ ^\s*function ]]; then
-                # Is a function header
-                # TODO: This only parses the function name when using this syntax:
-                #           function my_func
-                function_name="$(
-                    echo "$doc_code" \
-                            | sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p'
-                )"
-                markdown_sections+=( \
-$'### `function '"${function_name}"$'`
-'"${doc_text}" \
-                )
-            else
-                warn "TODO: Documentation for non-function code\n\"${doc_text}\"\n\"${doc_code}\""
-            fi
-
-        else
+        # TODO: These meta comments don't quite work right (doc comments without code)
+        if [ -z "$doc_code" ]; then
             # Just add the comment to the markdown, without associated code.
             # A meta documentation comment of sorts.
             # Also append a vertical line separator.
             markdown_sections+=( "${doc_text}"$'\n\n---' )
+            continue
+        fi
+
+        # FUNCTION
+        if [[ $doc_code =~ ^\s*function ]]; then
+            markdown_sections+=( \
+                '### `function '"$( get_function_name_from "$doc_code" )"'`
+'"${doc_text}"
+            )
+
+        # VARIABLE
+        elif [[ $doc_code =~ \$[A-Z]+ ]] || [[ $doc_code =~ [A-Z]+= ]]; then
+        # elif [[ $doc_code =~ [^A-Za-z0-9_][A-Z]+[^A-Za-z0-9_] ]]; then
+            markdown_sections+=( \
+                '### `$'"$( get_variable_name_from "$doc_code" )"'`
+'"${doc_text}"
+            )
+
+        else
+            warn "TODO: Documentation for non-function code\n\"${doc_text}\"\n\"${doc_code}\""
         fi
     done
 
@@ -97,6 +99,16 @@ function get_function_headers_with_docs {
     for (( i = 0; i < ${#return_doc_groups[@]}; i++ )); do
         return_doc_groups[i]="${doc_groups[i]//"$lftmp"/$'\n'}"
     done
+}
+
+function get_function_name_from {
+    # TODO: This only parses the function name when using this syntax:
+    #           function my_func
+    sed -En 's/^\s*function\s+(\w+)\s+.*$/\1/p' <<< "$1"
+}
+
+function get_variable_name_from {
+    sed -En 's/^.+\b([A-Z]+)\b.+$$/\1/p' <<< "$1"
 }
 
 gen_docs "$@"
