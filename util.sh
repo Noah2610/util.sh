@@ -210,7 +210,7 @@ function semantic_date {
         BOXED_PADDING_VERT=0 \
             boxed-string -- "$dstr"
     else
-        echo "$dstr" | tee -a "$LOGFILE"
+        echo "$dstr"
     fi
 }
 
