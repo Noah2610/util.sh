@@ -1,7 +1,7 @@
 #!/bin/bash
-# Generates a documentation markdown file for util.sh
-# It documents all functions by grabbing the function names
-# and their documentation comments above the their header.
+# Generates documentation as markdown for `util.sh`.
+# Supports documenting functions, variables, and standalone meta comments.
+# Documentation is generated from comments starting with `##`.
 
 # shellcheck disable=2155
 
@@ -10,19 +10,47 @@ set -e
 # shellcheck source=./util.sh
 source "./util.sh"
 
+DOCS_FILE="${ROOT}/DOCS.md"
 UTIL_SH="${ROOT}/util.sh"
 DOC_COMMENT="##"
+TOC_MARKER="<!-- TOC -->"
+# TOC_TITLE="## Table of Contents ([generated](https://github.com/Noah2610/GenTOC))"
+WITH_TOC=0
 
 check_file "$UTIL_SH"
 check "pcregrep"
 check "sed"
+
+
+function main {
+    can_gen_toc && WITH_TOC=1
+
+    msg "Generating docs..."
+    gen_docs "$@" > "$DOCS_FILE"
+
+    if [ $WITH_TOC -eq 1 ]; then
+        msg "Generating Table of Contents with $(clr "${CLR_CODE[@]}")gentoc$(clrrs)..."
+        gentoc "$DOCS_FILE" -O -f "${TOC_MARKER}" -t "" -n 2
+        msg "Table of Contents generated"
+    fi
+
+    msg "Docs generated: $(clr "${CLR_CODE[@]}")${DOCS_FILE}$(clrrs)"
+}
+
+function can_gen_toc {
+    is_available "gentoc" || return 1
+    gentoc --help &> /dev/null
+}
 
 function gen_docs {
     local doc_groups
     # argument used as nameref
     get_function_headers_with_docs doc_groups
 
-    local markdown_sections=()
+    local meta_docs=()
+    local function_docs=()
+    local variable_docs=()
+
     local doc_group
     local doc_lines
     local doc_code
@@ -48,34 +76,62 @@ function gen_docs {
                 | sed 's/^\s*'"${DOC_COMMENT}"'\s\+//g'
         )"
 
+        # META
         # TODO: These meta comments don't quite work right (doc comments without code)
         if [ -z "$doc_code" ]; then
             # Just add the comment to the markdown, without associated code.
             # A meta documentation comment of sorts.
-            # Also append a vertical line separator.
-            markdown_sections+=( "${doc_text}"$'\n\n---' )
+            meta_docs+=( "${doc_text}"$'\n\n' )
             continue
         fi
 
         # FUNCTION
         if [[ $doc_code =~ ^\s*function ]]; then
-            markdown_sections+=( \
-                '### `function '"$( get_function_name_from "$doc_code" )"'`
+            function_docs+=(
+                '### `'"$( get_function_name_from "$doc_code" )"'()`
 '"${doc_text}"
             )
+            continue
+        fi
 
         # VARIABLE
-        elif [[ $doc_code =~ \$[A-Z]+ ]] || [[ $doc_code =~ [A-Z]+= ]]; then
+        if [[ $doc_code =~ \$[A-Z]+ ]] || [[ $doc_code =~ [A-Z]+= ]]; then
         # elif [[ $doc_code =~ [^A-Za-z0-9_][A-Z]+[^A-Za-z0-9_] ]]; then
-            markdown_sections+=( \
+            variable_docs+=(
                 '### `$'"$( get_variable_name_from "$doc_code" )"'`
 '"${doc_text}"
             )
-
-        else
-            warn "TODO: Documentation for non-function code\n\"${doc_text}\"\n\"${doc_code}\""
+            continue
         fi
+
+        warn "TODO: Documentation for unsupported code\n\"${doc_text}\"\n\"${doc_code}\""
     done
+
+    local meta_md="$( join_by $'\n\n' "${meta_docs[@]}" )"
+    local function_md="$( join_by $'\n\n' "${function_docs[@]}" )"
+    local variable_md="$( join_by $'\n\n' "${variable_docs[@]}" )"
+
+    local markdown_sections=()
+
+    markdown_sections+=("${meta_md}")
+
+    if [ $WITH_TOC -eq 1 ]; then
+        markdown_sections+=(
+"<details>
+<summary>Table of Contents</summary>
+
+<sub>Generated with [\`gentoc\`](https://github.com/Noah2610/GenTOC)<sub>
+
+${TOC_MARKER}
+</details>"
+        )
+    fi
+
+    markdown_sections+=("---")
+    markdown_sections+=("## Variables")
+    markdown_sections+=("${variable_md}")
+    markdown_sections+=("## Functions")
+    markdown_sections+=("${function_md}")
 
     local markdown="$( join_by $'\n\n' "${markdown_sections[@]}" )"
     echo "${markdown}"
@@ -111,4 +167,4 @@ function get_variable_name_from {
     sed -En 's/^.+\b([A-Z]+)\b.+$$/\1/p' <<< "$1"
 }
 
-gen_docs "$@"
+main "$@"
