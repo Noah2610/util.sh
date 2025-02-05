@@ -302,8 +302,22 @@ function run_terminal {
 ## Returns `0` or `1` depending on if the user answers
 ## positively (`y`) or negatively (`n`).
 ## The first argument is the message/question printed to `stdout`.
+## Optionally, pass a second argument to set the default answer ("y" or "n").
+## If no default is given, then the user will continue to be prompted until they
+## answer with a valid input.
 function prompt_question {
-    local msg="$1 [y|n] "
+    local default="$2"
+    local options="[y|n]"
+
+    if [ -n "$default" ]; then
+        case "$default" in
+            "y"|"Y") options="[Y|n]" ;;
+            "n"|"N") options="[y|N]" ;;
+            *) err "Invalid default answer given to \`prompt_question\` function: \"${default}\"" ;;
+        esac
+    fi
+
+    local msg="$1 $options "
     local input=
     while [ -z "$input" ]; do
         echo -en "$msg"
@@ -312,7 +326,13 @@ function prompt_question {
         case "${input:0:1}" in
             "y"|"Y") return 0 ;;
             "n"|"N") return 1 ;;
-            *) input= ;;
+            *)
+                case "$default" in
+                    "y"|"Y") return 0 ;;
+                    "n"|"N") return 1 ;;
+                    *) input= ;;
+                esac
+                ;;
         esac
     done
 }
