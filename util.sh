@@ -327,13 +327,13 @@ function is_relative_path {
     [[ "$1" != /* ]]
 }
 
+## Joins the given arguments (starting at `$2`) with the given delimiter `$1`.
 ## https://stackoverflow.com/a/17841619
 function join_by {
-    local d=$1
-    shift
-    echo -n "$1"
-    shift
-    printf "%s" "${@/#/$d}"
+    local d=${1-} f=${2-}
+    if shift 2; then
+        printf %s "$f" "${@/#/$d}"
+    fi
 }
 
 ## `realpath` wrapper function.
