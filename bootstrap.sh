@@ -10,4 +10,4 @@ function _dl_util_sh {
     local dir="$( dirname "$1" )"
     [ -f "${dir}/util.sh" ] || bash "${dir}/download-util.sh" "$UTIL_VERSION" || exit 1
     source "${dir}/util.sh"
-}; _dl_util_sh "$0"
+}; _dl_util_sh "$0"; unset -f _dl_util_sh

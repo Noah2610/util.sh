@@ -351,7 +351,7 @@ function realpath {
 
 # Initialize the helper script.
 # Is run at the end of this script.
-function _init {
+function _init_utilsh {
     check "basename"
     check "dirname"
     check "tee"
@@ -392,4 +392,5 @@ function _init {
     CLR_CODE=( "blue" "black" "default" )
 }
 
-_init "$0"
+_init_utilsh "$0"
+unset -f _init_utilsh
