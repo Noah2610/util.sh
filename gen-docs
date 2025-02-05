@@ -8,7 +8,7 @@
 set -e
 
 # shellcheck source=./util.sh
-source "./util.sh"
+source "$( dirname "$0" )/util.sh"
 
 DOCS_FILE="${ROOT}/DOCS.md"
 UTIL_SH="${ROOT}/util.sh"
@@ -96,7 +96,6 @@ function gen_docs {
 
         # VARIABLE
         if [[ $doc_code =~ \$[A-Z]+ ]] || [[ $doc_code =~ [A-Z]+= ]]; then
-        # elif [[ $doc_code =~ [^A-Za-z0-9_][A-Z]+[^A-Za-z0-9_] ]]; then
             variable_docs+=(
                 '### `$'"$( get_variable_name_from "$doc_code" )"'`
 '"${doc_text}"
@@ -144,7 +143,7 @@ function get_function_headers_with_docs {
 
     mapfile -t return_doc_groups < <(
         pcregrep -MA1 \
-            '(^\s*'"${DOC_COMMENT}"'[^\n]+$)+' \
+            '(^\h*'"${DOC_COMMENT}"'[^\n]+$)+' \
             "$UTIL_SH" \
             | sed ':a;N;$!ba;s/\n/'"${lftmp}"'/g' \
             | sed 's/'"${lftmp}"'--'"${lftmp}"'/\n/g'
@@ -153,7 +152,7 @@ function get_function_headers_with_docs {
 
     local i
     for (( i = 0; i < ${#return_doc_groups[@]}; i++ )); do
-        return_doc_groups[i]="${doc_groups[i]//"$lftmp"/$'\n'}"
+        return_doc_groups[i]="${return_doc_groups[i]//"$lftmp"/$'\n'}"
     done
 }
 
@@ -164,7 +163,7 @@ function get_function_name_from {
 }
 
 function get_variable_name_from {
-    sed -En 's/^.+\b([A-Z]+)\b.+$$/\1/p' <<< "$1"
+    sed -En 's/^.*\b([A-Z_][A-Z_0-9]*)\b.*$/\1/p' <<< "$1"
 }
 
 main "$@"
