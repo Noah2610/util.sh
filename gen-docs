@@ -21,7 +21,6 @@ check_file "$UTIL_SH"
 check "pcregrep"
 check "sed"
 
-
 function main {
     can_gen_toc && WITH_TOC=1
 

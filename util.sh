@@ -1,5 +1,5 @@
 ## # util.sh
-## Version: `2.3pre.0`
+UTILSH_VERSION="2.3pre.0"
 ## https://github.com/Noah2610/util.sh
 
 set -o pipefail
@@ -413,6 +413,10 @@ function _init_utilsh {
     local script_name="$1"
     # shellcheck disable=SC2155
     local script_path="$( realpath "$script_name" )"
+
+
+    ## Set the `$UTILSH_VERSION` variable to util.sh's version.
+    UTILSH_VERSION="$UTILSH_VERSION"
 
     ## Set `$ROOT` variable to the directory of this script,
     ## unless it was already set.

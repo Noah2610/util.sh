@@ -1,5 +1,5 @@
 # util.sh  
-Version: `2.3pre.0`  
+UTILSH_VERSION="2.3pre.0"  
 https://github.com/Noah2610/util.sh
 
 <details>
@@ -8,6 +8,7 @@ https://github.com/Noah2610/util.sh
 <sub>Generated with [`gentoc`](https://github.com/Noah2610/GenTOC)<sub>
 
 - [Variables](#variables)
+  - [`$UTILSH_VERSION`](#utilsh_version)
   - [`$ROOT`](#root)
   - [`$LOGFILE`](#logfile)
   - [`$TERMINAL`](#terminal)
@@ -45,6 +46,9 @@ https://github.com/Noah2610/util.sh
 ---
 
 ## Variables
+
+### `$UTILSH_VERSION`
+Set the `$UTILSH_VERSION` variable to util.sh's version.
 
 ### `$ROOT`
 Set `$ROOT` variable to the directory of this script,  
