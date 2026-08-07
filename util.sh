@@ -299,6 +299,40 @@ function run_terminal {
     esac
 }
 
+## Reads user input as string and prints value.
+## First argument is variable the output will be defined to.
+## Second argument is the prompt message printed before user inputs.
+## Third optional argument is default value if user ends input (C-d).
+## Will repeatedly prompt user until input has value or input is ended (C-d).
+function prompt_input {
+    local var="$1"
+    [ -z "$var" ] && err "Expected at least one argument for function \`prompt_input\`"
+
+    local msg="$2 "
+    local default="$3"
+    [ -n "$default" ] && local msg="$2 $(clrfg blue)[${default}]$(clrrs) "
+
+    local input=
+    while [ -z "$input" ]; do
+        echo -en "$msg"
+        if ! read -r input; then
+            break
+        fi
+    done
+
+    if [ -n "$input" ]; then
+        export -n "${var}=${input}"
+        return 0
+    fi
+
+    if [ -n "$default" ]; then
+        export -n "${var}=${default}"
+        return 0
+    fi
+
+    return 1
+}
+
 ## Returns `0` or `1` depending on if the user answers
 ## positively (`y`) or negatively (`n`).
 ## The first argument is the message/question printed to `stdout`.
@@ -317,7 +351,7 @@ function prompt_question {
         esac
     fi
 
-    local msg="$1 $options "
+    local msg="$1 $(clrfg blue)${options}$(clrrs) "
     local input=
     while [ -z "$input" ]; do
         echo -en "$msg"
