@@ -1,5 +1,5 @@
 # util.sh  
-Version: `2.2.6`  
+Version: `2.3pre.0`  
 https://github.com/Noah2610/util.sh
 
 <details>
@@ -34,6 +34,7 @@ https://github.com/Noah2610/util.sh
   - [`is_negative()`](#is_negative)
   - [`should_run_in_terminal()`](#should_run_in_terminal)
   - [`run_terminal()`](#run_terminal)
+  - [`prompt_input()`](#prompt_input)
   - [`prompt_question()`](#prompt_question)
   - [`is_absolute_path()`](#is_absolute_path)
   - [`is_relative_path()`](#is_relative_path)
@@ -168,6 +169,13 @@ Run the given command in a new terminal.
 The first argument is the command, any following arguments  
 are passed to the command as its arguments.  
 The new shell's working directory is set to the `$ROOT` variable.
+
+### `prompt_input()`
+Reads user input as string and prints value.  
+First argument is variable the output will be defined to.  
+Second argument is the prompt message printed before user inputs.  
+Third optional argument is default value if user ends input (C-d).  
+Will repeatedly prompt user until input has value or input is ended (C-d).
 
 ### `prompt_question()`
 Returns `0` or `1` depending on if the user answers  
