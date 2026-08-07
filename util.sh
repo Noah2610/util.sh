@@ -141,6 +141,26 @@ function clrattr {
     esac
 }
 
+## Set error colors
+function clrerr {
+    clr "${CLR_ERR[@]}"
+}
+
+## Set warning colors
+function clrwarn {
+    clr "${CLR_WARN[@]}"
+}
+
+## Set message colors
+function clrmsg {
+    clr "${CLR_MSG[@]}"
+}
+
+## Set code colors
+function clrcode {
+    clr "${CLR_CODE[@]}"
+}
+
 ## Set the foreground, background, and attribute colors all at once.
 ## This function takes three arguments:
 ## - foreground color (see `clrfg`)
@@ -236,7 +256,7 @@ function try_run {
     fi
 }
 
-## Similar to function `try_run_hidden`, but hides the command's output.
+## Similar to function `try_run`, but hides the command's output.
 ## Tries to run the given command and hides its output.
 ## All arguments are parsed as the command, so the first argument is the
 ## command, and all following arguments are passed as arguments to the command.
@@ -444,9 +464,17 @@ function _init_utilsh {
 
     # Set some commonly used colors.
     # Arrays have the format of `( "fgcolor" "bgcolor" "attribute" )`.
+
+    ## Error color (white fg, red bg, bold attr)
     CLR_ERR=( "white" "red" "bold" )
+
+    ## Warning color (black fg, yellow bg, bold attr)
     CLR_WARN=( "black" "yellow" "bold" )
+
+    ## Message color (yellow fg)
     CLR_MSG=( "yellow" "default" "default" )
+
+    ## Code color (blue fg, black bg)
     CLR_CODE=( "blue" "black" "default" )
 }
 

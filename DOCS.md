@@ -13,6 +13,10 @@ https://github.com/Noah2610/util.sh
   - [`$LOGFILE`](#logfile)
   - [`$TERMINAL`](#terminal)
   - [`$NO_COLOR`](#no_color)
+  - [`$CLR_ERR`](#clr_err)
+  - [`$CLR_WARN`](#clr_warn)
+  - [`$CLR_MSG`](#clr_msg)
+  - [`$CLR_CODE`](#clr_code)
 - [Functions](#functions)
   - [`is_available()`](#is_available)
   - [`is_running()`](#is_running)
@@ -26,6 +30,10 @@ https://github.com/Noah2610/util.sh
   - [`clrfg()`](#clrfg)
   - [`clrbg()`](#clrbg)
   - [`clrattr()`](#clrattr)
+  - [`clrerr()`](#clrerr)
+  - [`clrwarn()`](#clrwarn)
+  - [`clrmsg()`](#clrmsg)
+  - [`clrcode()`](#clrcode)
   - [`clr()`](#clr)
   - [`clrrs()`](#clrrs)
   - [`semantic_date()`](#semantic_date)
@@ -64,6 +72,18 @@ Set the `$TERMINAL` variable unless it was already set.
 
 ### `$NO_COLOR`
 Set `$NO_COLOR` to disable color output.
+
+### `$CLR_ERR`
+Error color (white fg, red bg, bold attr)
+
+### `$CLR_WARN`
+Warning color (black fg, yellow bg, bold attr)
+
+### `$CLR_MSG`
+Message color (yellow fg)
+
+### `$CLR_CODE`
+Code color (blue fg, black bg)
 
 ## Functions
 
@@ -128,6 +148,18 @@ Available attributes:
 "default", "reset"  
 ```
 
+### `clrerr()`
+Set error colors
+
+### `clrwarn()`
+Set warning colors
+
+### `clrmsg()`
+Set message colors
+
+### `clrcode()`
+Set code colors
+
 ### `clr()`
 Set the foreground, background, and attribute colors all at once.  
 This function takes three arguments:  
@@ -151,7 +183,7 @@ Runs `err` if the command fails.
 Writes the command's output to the `$LOGFILE`.
 
 ### `try_run_hidden()`
-Similar to function `try_run_hidden`, but hides the command's output.  
+Similar to function `try_run`, but hides the command's output.  
 Tries to run the given command and hides its output.  
 All arguments are parsed as the command, so the first argument is the  
 command, and all following arguments are passed as arguments to the command.  
